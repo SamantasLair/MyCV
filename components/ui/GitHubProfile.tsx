@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Github, Linkedin, Mail } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
 
 interface GitHubUser {
   name: string;
@@ -17,13 +18,13 @@ interface GitHubUser {
 }
 
 const FALLBACK: GitHubUser = {
-  name: "Samuel Ananta",
-  login: "SamantasLair",
+  name: siteConfig.authorName,
+  login: siteConfig.githubUsername,
   avatar_url: "https://avatars.githubusercontent.com/u/94610303?v=4",
   bio: "Software Engineer & Full-Stack Developer",
   public_repos: 38,
   followers: 1,
-  html_url: "https://github.com/SamantasLair",
+  html_url: `https://github.com/${siteConfig.githubUsername}`,
   hireable: true,
 };
 
@@ -33,7 +34,7 @@ export const GitHubProfile = () => {
   const [user, setUser] = useState<GitHubUser>(FALLBACK);
 
   useEffect(() => {
-    fetch("https://api.github.com/users/SamantasLair")
+    fetch(`https://api.github.com/users/${siteConfig.githubUsername}`)
       .then((res) => (res.ok ? res.json() : FALLBACK))
       .then((data) => setUser({ ...FALLBACK, ...data }))
       .catch(() => setUser(FALLBACK));
@@ -68,14 +69,14 @@ export const GitHubProfile = () => {
           </Link>
           <Link
             id="linkedin"
-            href="https://linkedin.com"
+            href={siteConfig.linkedinUrl}
             target="_blank"
             className="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-slate-400 hover:text-white"
           >
             <Linkedin size={18} />
           </Link>
           <Link
-            href="mailto:email@example.com"
+            href={`mailto:${siteConfig.email}`}
             className="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-slate-400 hover:text-white"
           >
             <Mail size={18} />

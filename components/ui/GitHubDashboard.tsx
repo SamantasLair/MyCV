@@ -3,7 +3,9 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Star, GitPullRequest, AlertCircle, Users, GitCommit } from "lucide-react";
 
-const GITHUB_USERNAME = "SamantasLair";
+import { siteConfig } from "@/lib/site-config";
+
+const GITHUB_USERNAME = siteConfig.githubUsername;
 
 interface RepoData {
   stargazers_count: number;

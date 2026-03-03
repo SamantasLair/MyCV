@@ -8,6 +8,7 @@ import { HexagonCard } from "@/components/ui/HexagonCard";
 import { MagneticParticles } from "@/components/ui/MagneticParticles";
 import { GitHubProfile } from "@/components/ui/GitHubProfile";
 import { GitHubDashboard } from "@/components/ui/GitHubDashboard";
+import { siteConfig } from "@/lib/site-config";
 
 export default function Home() {
   return (
@@ -105,7 +106,7 @@ export default function Home() {
                 <button className="px-5 py-2.5 bg-white text-black rounded-xl font-semibold text-sm hover:bg-slate-200 transition-colors">
                   Download CV
                 </button>
-                <Link href="mailto:email@example.com" className="px-5 py-2.5 border border-white/10 rounded-xl font-semibold text-sm text-slate-300 hover:bg-white/5 transition-colors">
+                <Link href={`mailto:${siteConfig.email}`} className="px-5 py-2.5 border border-white/10 rounded-xl font-semibold text-sm text-slate-300 hover:bg-white/5 transition-colors">
                   Contact Me
                 </Link>
               </div>
@@ -115,7 +116,7 @@ export default function Home() {
 
         <footer className="text-center text-sm text-slate-600 py-8">
           <p>Built with Next.js 16 & Tailwind 4</p>
-          <p className="mt-1">© {new Date().getFullYear()} Samuel Ananta. All rights reserved.</p>
+          <p className="mt-1">© {new Date().getFullYear()} {siteConfig.authorName}. All rights reserved.</p>
         </footer>
       </div>
     </main>
