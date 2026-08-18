@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Star, GitPullRequest, AlertCircle, Users, GitCommit } from "lucide-react";
 
 import { siteConfig } from "@/lib/site-config";
+import { useCountUp } from "@/lib/hooks/useCountUp";
 
 const GITHUB_USERNAME = siteConfig.githubUsername;
 
@@ -65,12 +66,18 @@ const generateContributions = (): number[] => {
 
 /** General Stats Card (Left Top) */
 const StatsCard = ({ stats, loading }: { stats: DashboardState; loading: boolean }) => {
+  const animatedStars = useCountUp(stats.totalStars);
+  const animatedCommits = useCountUp(stats.totalCommits);
+  const animatedPRs = useCountUp(stats.totalPRs);
+  const animatedIssues = useCountUp(stats.totalIssues);
+  const animatedContributed = useCountUp(stats.contributedTo);
+
   const items = [
-    { label: "Total Stars", value: stats.totalStars, icon: Star },
-    { label: "Commits (est.)", value: stats.totalCommits, icon: GitCommit },
-    { label: "PRs", value: stats.totalPRs, icon: GitPullRequest },
-    { label: "Issues", value: stats.totalIssues, icon: AlertCircle },
-    { label: "Contributed to", value: stats.contributedTo, icon: Users },
+    { label: "Total Stars", value: animatedStars, icon: Star },
+    { label: "Commits (est.)", value: animatedCommits, icon: GitCommit },
+    { label: "PRs", value: animatedPRs, icon: GitPullRequest },
+    { label: "Issues", value: animatedIssues, icon: AlertCircle },
+    { label: "Contributed to", value: animatedContributed, icon: Users },
   ];
   return (
     <div data-particle-collider className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-5 flex gap-4">
@@ -242,11 +249,11 @@ const ContributionGraph = ({ data }: { data: number[] }) => {
   );
 };
 
+const CALENDAR_COLORS = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"];
+
 /** Contribution Calendar Card (Canvas heatmap) */
 const ContributionCalendar = ({ data }: { data: number[] }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const COLORS = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"];
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -276,13 +283,13 @@ const ContributionCalendar = ({ data }: { data: number[] }) => {
       const day = i % 7;
       const x = startX + week * (cellSize + gap);
       const y = startY + day * (cellSize + gap);
-      ctx.fillStyle = COLORS[Math.min(level, 4)];
+      ctx.fillStyle = CALENDAR_COLORS[Math.min(level, 4)];
       ctx.beginPath();
       const r = 2;
       ctx.roundRect(x, y, cellSize, cellSize, r);
       ctx.fill();
     });
-  }, [data, COLORS]);
+  }, [data]);
 
   useEffect(() => {
     draw();
@@ -297,7 +304,7 @@ const ContributionCalendar = ({ data }: { data: number[] }) => {
       {/* Legend */}
       <div className="flex items-center gap-1.5 mt-3 justify-end">
         <span className="text-[10px] text-slate-500">Less</span>
-        {COLORS.map((c, i) => (
+        {CALENDAR_COLORS.map((c, i) => (
           <div key={i} className="w-3 h-3 rounded-sm" style={{ backgroundColor: c }} />
         ))}
         <span className="text-[10px] text-slate-500">More</span>
@@ -369,7 +376,7 @@ export const GitHubDashboard = () => {
   }, []);
 
   return (
-    <div id="github-dashboard" className="space-y-4">
+    <div id="github" className="space-y-4">
       {/* Header */}
       <div className="text-center md:text-left">
         <h2 className="text-2xl font-bold text-white">My GitHub Activity</h2>

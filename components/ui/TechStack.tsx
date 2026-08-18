@@ -91,7 +91,7 @@ const TECH_CATEGORIES: { title: string; items: TechItem[] }[] = [
         icon: `${DEVICON_BASE}/vercel/vercel-original.svg`,
         description: "Vercel is the platform for frontend developers, providing the speed and reliability innovators need to create at the moment of inspiration.",
         link: "https://vercel.com/docs",
-        className: "bg-black text-white border border-white/20", // Black for Vercel
+        className: "bg-[#d1d5db] text-[#111827] border border-[#9ca3af]", // Sleek RGB Gray (rgb(209, 213, 219)) to make black logo visible
       },
       {
         name: "React",
