@@ -2,18 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, Code2, FolderGit2, Mail, Github } from "lucide-react";
+import { Menu, X, User, Code2, FolderGit2, Mail, Github, Command, FileText } from "lucide-react";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 
 const NAV_ITEMS = [
-  { label: "About", href: "#about", icon: User },
-  { label: "Activity", href: "#github", icon: FolderGit2 },
-  { label: "Projects", href: "#projects", icon: Code2 },
-  { label: "Contact", href: "#contact", icon: Mail },
+  { label: "About", href: "/#about", icon: User },
+  { label: "Activity", href: "/#github", icon: FolderGit2 },
+  { label: "Projects", href: "/#projects", icon: Code2 },
+  { label: "Contact", href: "/#contact", icon: Mail },
+  { label: "Resume", href: "/resume", icon: FileText },
 ];
 
-export const Navbar = () => {
+interface NavbarProps {
+  onOpenCommandPalette?: () => void;
+}
+
+export const Navbar = ({ onOpenCommandPalette }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,7 +27,6 @@ export const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Section intersection observer fallback via scroll position
       const sections = ["hero", "about", "github", "projects", "contact"];
       const scrollPos = window.scrollY + 200;
 
@@ -44,12 +48,14 @@ export const Navbar = () => {
   }, []);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.replace("#", "");
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setMobileMenuOpen(false);
+    if (href.startsWith("/#") || href.startsWith("#")) {
+      const targetId = href.replace(/^\/?#/, "");
+      const element = document.getElementById(targetId);
+      if (element) {
+        e.preventDefault();
+        element.scrollIntoView({ behavior: "smooth" });
+        setMobileMenuOpen(false);
+      }
     }
   };
 
@@ -58,7 +64,7 @@ export const Navbar = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
           ? "bg-[#010206]/85 backdrop-blur-2xl border-b border-cyan-950/30 shadow-[0_4px_30px_rgba(0,0,0,0.85)] py-3"
           : "bg-transparent py-5"
@@ -120,15 +126,28 @@ export const Navbar = () => {
         </nav>
 
         {/* Right Action CTA & Mobile Toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Command Palette Button */}
+          {onOpenCommandPalette && (
+            <button
+              onClick={onOpenCommandPalette}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-300 hover:text-white rounded-xl text-xs font-mono transition-all duration-200"
+              aria-label="Open Command Palette"
+            >
+              <Command size={13} className="text-cyan-400" />
+              <span className="hidden sm:inline">Search</span>
+              <kbd className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-slate-400">⌘K</kbd>
+            </button>
+          )}
+
           <a
             href={`https://github.com/${siteConfig.githubUsername}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold text-xs transition-all duration-300 shadow-md shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5"
+            className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold text-xs transition-all duration-300 shadow-md shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5"
           >
             <Github size={14} />
-            <span>GitHub Profile</span>
+            <span>GitHub</span>
           </a>
 
           <button
@@ -171,7 +190,19 @@ export const Navbar = () => {
                   </a>
                 );
               })}
-              <div className="pt-4 border-t border-white/10 mt-2">
+              <div className="pt-4 border-t border-white/10 mt-2 flex flex-col gap-2">
+                {onOpenCommandPalette && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenCommandPalette();
+                    }}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-white/10 text-slate-200 rounded-xl font-semibold text-sm"
+                  >
+                    <Command size={16} className="text-cyan-400" />
+                    <span>Command Palette (⌘K)</span>
+                  </button>
+                )}
                 <a
                   href={`https://github.com/${siteConfig.githubUsername}`}
                   target="_blank"

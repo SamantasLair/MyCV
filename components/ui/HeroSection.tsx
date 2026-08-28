@@ -23,7 +23,7 @@ const FALLBACK_USER: GitHubUser = {
   name: siteConfig.authorName,
   login: siteConfig.githubUsername,
   avatar_url: "https://avatars.githubusercontent.com/u/94610303?v=4",
-  bio: "Passionate Software Engineer & Full-Stack Architect building modern web applications and scalable system solutions.",
+  bio: "Passionate Software Engineer & Full-Stack Architect building modern web applications, scalable APIs, and high-performance systems.",
   public_repos: 38,
   followers: 12,
   html_url: `https://github.com/${siteConfig.githubUsername}`,
@@ -34,10 +34,14 @@ const ROLES = [
   "Full-Stack Web Engineer",
   "React & Next.js Architect",
   "Systems & C++ Developer",
-  "Open Source Contributor",
+  "AI & NLP Pipeline Builder",
 ];
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  onOpenTerminal?: () => void;
+}
+
+export const HeroSection = ({ onOpenTerminal }: HeroSectionProps) => {
   const [user, setUser] = useState<GitHubUser>(FALLBACK_USER);
   const typewriterText = useTypewriter(ROLES, 60, 30, 2200);
 
@@ -92,9 +96,23 @@ export const HeroSection = () => {
               <div className="absolute top-0 right-2 w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/50">
                 <Code2 size={14} />
               </div>
-              <div className="absolute bottom-2 left-0 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/50">
-                <Terminal size={14} />
-              </div>
+              {onOpenTerminal ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenTerminal();
+                  }}
+                  className="absolute bottom-2 left-0 w-7 h-7 bg-purple-600 hover:bg-purple-500 pointer-events-auto rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/50 transition-transform hover:scale-110"
+                  aria-label="Open Terminal"
+                  title="Launch Developer CLI"
+                >
+                  <Terminal size={14} />
+                </button>
+              ) : (
+                <div className="absolute bottom-2 left-0 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/50">
+                  <Terminal size={14} />
+                </div>
+              )}
             </motion.div>
           </div>
 
@@ -179,7 +197,7 @@ export const HeroSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4"
+            className="flex flex-wrap items-center justify-center md:justify-start gap-3.5 pt-4"
           >
             <a
               href="#projects"
@@ -192,9 +210,19 @@ export const HeroSection = () => {
               Explore My Work
             </a>
 
+            {onOpenTerminal && (
+              <button
+                onClick={onOpenTerminal}
+                className="px-5 py-3 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-300 font-mono font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 flex items-center gap-2 shadow-lg shadow-cyan-500/10"
+              >
+                <Terminal size={15} />
+                <span>Dev CLI</span>
+              </button>
+            )}
+
             <a
               href={`mailto:${siteConfig.email}`}
-              className="px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-200 font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5"
+              className="px-5 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-200 font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5"
             >
               Contact Me
             </a>

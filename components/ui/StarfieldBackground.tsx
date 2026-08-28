@@ -6,7 +6,7 @@ import type { SectionTarget } from "@/lib/hooks/useActiveSectionTarget";
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface StarfieldProps {
-  guideTargetRef: React.MutableRefObject<SectionTarget | null>;
+  guideTargetRef?: React.RefObject<SectionTarget | null> | React.MutableRefObject<SectionTarget | null>;
 }
 
 // ─── Galactic Types ──────────────────────────────────────────────────────────
@@ -658,7 +658,7 @@ export const StarfieldBackground = ({ guideTargetRef }: StarfieldProps) => {
       ctx.clearRect(0, 0, W, H);
       t++;
 
-      const target = guideTargetRef.current;
+      const target = guideTargetRef?.current;
       let activeSectorIdx = -1;
       if (target) {
         activeSectorIdx = SECTOR_DEFS.findIndex((s) => s.id === target.id);
